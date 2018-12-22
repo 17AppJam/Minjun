@@ -2,6 +2,7 @@ package nemo.kmj.com.a17appjam;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -12,7 +13,7 @@ import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
 
 public class MyService extends Service {
-
+    boolean isAlarming=false;
     BluetoothSPP bt=new BluetoothSPP(this);
 
     IBinder mBinder = new MyBinder();
@@ -37,7 +38,13 @@ public class MyService extends Service {
     public void onCreate() {
         super.onCreate();
         // 서비스에서 가장 먼저 호출됨(최초에 한번만)
-        blueToothStart();
+        if(load()==1){
+            blueToothStart();
+        }
+        else{
+            Log.e("test", "쉐어드0");
+        }
+
 
 
 
@@ -48,7 +55,13 @@ public class MyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId){
         Log.e("test", "서비스의 onStartCommand");
 
-        blueToothStart();
+        if(load()==1){
+            blueToothStart();
+        }
+        else{
+            Log.e("test", "쉐어드0");
+
+        }
 
 
         return super.onStartCommand(intent, flags, startId);
@@ -77,9 +90,17 @@ public class MyService extends Service {
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
             public void onDataReceived(byte[] data, String message) {
                 //ㄷㅔ이터 받아질때 매번 실행
+
                 Log.e("test", message+" "+bt.getConnectedDeviceName());
-                Intent intent=new Intent(getApplicationContext(),AlarmActivity.class);
-                startActivity(intent);
+                if(!isAlarming){
+                    isAlarming=true;
+                    bt.stopService();
+                    Log.e("test","백그돌리는거끄기");
+                    Intent intent=new Intent(getApplicationContext(),AlarmActivity.class);
+                    startActivity(intent);
+
+                }
+
 
 
 
@@ -109,6 +130,16 @@ public class MyService extends Service {
                 Log.e("test", "sad");
             }
         });
+    }
+    int load() {
+        SharedPreferences pref;
+        pref = getSharedPreferences("pref", MODE_PRIVATE);
+        int check = pref.getInt("checked", 0);
+        if (check == 1) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
 }

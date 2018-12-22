@@ -1,5 +1,7 @@
 package nemo.kmj.com.a17appjam;
 
+import android.app.ActivityManager;
+import android.app.ApplicationErrorReport;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,7 +28,7 @@ import static android.net.wifi.p2p.WifiP2pManager.ERROR;
 public class MainActivity extends AppCompatActivity {
     public Button _vibrator_btn;
     public TextToSpeech tts;
-    boolean isAlarming=false;
+
     TextView On, Off;
     Switch mSwitch;
     ImageView mbell_off, mbell_on;
@@ -61,14 +63,14 @@ public class MainActivity extends AppCompatActivity {
 
     void bluetoothStart() {
 
-        if(!isAlarming){ // 안켜져있을때
-            isAlarming=true;
+
+            Log.e("test","intent할께요^^");
             Intent intent = new Intent(
                     getApplicationContext(),//현재제어권자
                     MyService.class); // 이동할 컴포넌트
 
             startService(intent); // 서비스 시작
-        }
+
 
     }
     void bluetoothStop(){
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt("checked", i);
         editor.commit();
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,29 +138,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status != ERROR) {
-                    tts.setLanguage(Locale.KOREAN);
-                }
 
-            }
-        });
-        _vibrator_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "컴퓨터를 종료하세요", Toast.LENGTH_SHORT).show();
-
-                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                vibrator.vibrate(1000);
-
-                tts.setPitch(1.0f);
-                tts.setSpeechRate(1.0f);
-                tts.speak("엄크가 떴습니다 컴퓨터를 종료하세요!", TextToSpeech.QUEUE_FLUSH, null);
-
-            }
-        });
+//        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+//            @Override
+//            public void onInit(int status) {
+//                if (status != ERROR) {
+//                    tts.setLanguage(Locale.KOREAN);
+//                }
+//
+//            }
+//        });
+//        _vibrator_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Toast.makeText(getApplicationContext(), "컴퓨터를 종료하세요", Toast.LENGTH_SHORT).show();
+//
+//                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+//                vibrator.vibrate(1000);
+//
+//                tts.setPitch(1.0f);
+//                tts.setSpeechRate(1.0f);
+//                tts.speak("엄크가 떴습니다 컴퓨터를 종료하세요!", TextToSpeech.QUEUE_FLUSH, null);
+//
+//            }
+//        });
 
     }
 }
