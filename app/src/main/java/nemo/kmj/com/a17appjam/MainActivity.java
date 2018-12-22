@@ -53,11 +53,15 @@ public class MainActivity extends AppCompatActivity {
         if (check == 1) {
             mSwitch.setChecked(true);
             OnVisible();
+            mbell_off.setVisibility(ImageView.INVISIBLE);
+            mbell_on.setVisibility(ImageView.VISIBLE);
             bluetoothStart();
         } else {
             mSwitch.setChecked(false);
             OffVisible();
             bluetoothStop();
+            mbell_off.setVisibility(ImageView.VISIBLE);
+            mbell_on.setVisibility(ImageView.INVISIBLE);
         }
     }
 
@@ -99,9 +103,10 @@ public class MainActivity extends AppCompatActivity {
         On = findViewById(R.id.textView2);
         Off = findViewById(R.id.textView3);
         On.setVisibility(TextView.INVISIBLE);
-        load(); //쉐어드 불러오는곳
+
         mbell_off = findViewById(R.id.bell_off);
         mbell_on = findViewById(R.id.bell_on);
+        load(); //쉐어드 불러오는곳
         mSound = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
         mDing = mSound.load(this, R.raw.ddiring, 1);
 
