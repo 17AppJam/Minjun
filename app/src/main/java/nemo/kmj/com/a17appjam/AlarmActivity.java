@@ -19,6 +19,7 @@ import retrofit2.Response;
 public class AlarmActivity extends AppCompatActivity {
     Button btn;
     Vibrator vibrator;
+
     SimpleDateFormat mFormat;
 
 
@@ -28,6 +29,7 @@ public class AlarmActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alarm);
         btn=findViewById(R.id.message_off);
         vibrator= (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        th.start();
         long now = System.currentTimeMillis();
         mFormat=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Date mDate = new Date(now);
@@ -52,6 +54,7 @@ public class AlarmActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                th.interrupt();
                 save();
                 finishAffinity();
                 System.runFinalization();
@@ -60,16 +63,28 @@ public class AlarmActivity extends AppCompatActivity {
         });
 
     }
-    void vibrate(){
-        vibrator.vibrate(400);
-        Thread th=new Thread(new Runnable() {
+
+    Thread th= new Thread(new Runnable() {
             @Override
             public void run() {
+                while (true) {
+
+                    vibrator.vibrate(400);
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    vibrator.vibrate(400);
+                    try {
+                        Thread.sleep(700);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
 
             }
         });
-
-    }
     void save(){
         SharedPreferences pref;
         pref = getSharedPreferences("pref", MODE_PRIVATE);
