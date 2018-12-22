@@ -19,6 +19,9 @@ import retrofit2.Response;
 public class AlarmActivity extends AppCompatActivity {
     Button btn;
     Vibrator vibrator;
+    SimpleDateFormat mFormat;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,16 +29,16 @@ public class AlarmActivity extends AppCompatActivity {
         btn=findViewById(R.id.message_off);
         vibrator= (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         long now = System.currentTimeMillis();
+        mFormat=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Date mDate = new Date(now);
+        String time=mFormat.format(mDate).split(" ")[1];
+        time=time.split(":")[0];
+        time=String.valueOf(Integer.valueOf(time));
+        Log.e("test",time);
 
-        Date date = new Date(now);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-        String getTime = sdf.format(date);
-
-        Log.e("test",getTime);
 
 
-        NetRetrofit.getInstance().sendData(3).enqueue(new Callback<Data>() {
+        NetRetrofit.getInstance().sendData(Integer.valueOf(time)).enqueue(new Callback<Data>() {
             @Override
             public void onResponse(Call<Data> call, Response<Data> response) {
                 Log.e("test","success");
